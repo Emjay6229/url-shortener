@@ -4,17 +4,15 @@ const { connect } = require("./src/db/connection");
 const { urlRouter } = require("./src/urlshortener/url-shortener.route");
 
 config();
-
 const app = express();
 
 app.use(express.json());
 app.use(urlRouter);
 
-async function start () {
-  await connect(process.env.MONGODB_STRING);
-  app.listen(6000, function () {
-  console.info("app is listening on port 6000");
-})
-}
-
-start();
+// INVOKE FUNCTION IMMEDIATELY AFTER DEFINITION
+(async function start () {
+    await connect(process.env.MONGODB_STRING);
+    app.listen(6000, function () {
+    console.info("app is listening on port 6000");
+  })
+})();
