@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const urlSchema = mongoose.Schema({
   original_url: {
     type: String,

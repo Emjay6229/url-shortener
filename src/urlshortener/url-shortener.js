@@ -11,7 +11,8 @@ exports.generateShortUrl = async function (req, res) {
   const domain = process.env.DOMAIN;
 
   try {
-    if (!domain) return res.json("Domain is undefined");
+    if (!domain) 
+      return res.status(400).json("Domain is undefined");
 
     const checkForExistingId = await urlModel
       .findOne({ short_url: shortId })
@@ -30,8 +31,7 @@ exports.generateShortUrl = async function (req, res) {
       .status(200)
       .json(`Here is your shortened url: https://${domain}/${shortId}`);
   } catch (err) {
-    console.error(err.message);
-    console.trace(err.stack);
+    console.error(err);
     return res.status(400).json(`Internal Server error: ${err.message}`);
   }
 };
@@ -41,24 +41,25 @@ exports.redirectToLongUrl = async function (req, res) {
   const shortId = url.substring(1).split("/")[1];
 
   try {
-    const verify =
-      (await urlModel.findOne({ short_url: shortId })) ??
-      "couldn't not find url object.";
+    const verify = (await urlModel.findOne({ short_url: shortId })) 
+    ?? "couldn't not find url object.";
+
     const original_url = verify.original_url;
     return res.redirect(301, original_url);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     return res.status(500).json(`Internal Server error: ${err.message}`);
   }
 };
 
 exports.getAllShortUrls = async function (req, res) {
   try {
-    const arrayOfUrl =
-      (await urlModel.find()) ?? "couldn't not find url object.";
+    const arrayOfUrl = (await urlModel.find()) 
+    ?? "couldn't not find url object.";
+
     return res.status(200).json(arrayOfUrl);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     return res.status(500).json(`Internal Server error: ${err.message}`);
   }
 };
@@ -71,7 +72,7 @@ exports.deleteShortUrl = async function (req, res) {
     await urlModel.findOneAndDelete({ short_url: shortId });
     return res.status(200).json(`${url} has been deleted`);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     return res.status(500).json(`Internal Server error: ${err.message}`);
   }
 };
@@ -81,7 +82,7 @@ exports.deleteAllUrl = async function (req, res) {
     await urlModel.deleteMany();
     return res.status(200).json(`url list has been deleted`);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     return res.status(500).json(`Internal Server error: ${err.message}`);
   }
 };
